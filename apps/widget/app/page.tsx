@@ -1,12 +1,17 @@
-import { Button } from "@workspace/ui/components/button"
 
-export default function Page() {
-  return (
-    <div className="flex items-center justify-center min-h-svh">
-      <div className="flex flex-col items-center justify-center gap-4">
-        <h1 className="text-2xl font-bold">Hello Widget</h1>
-        <Button size="sm">Button</Button>
-      </div>
+'use client'
+ 
+import { useQueries, useQuery } from 'convex/react';
+import {api} from "@workspace/backend/_generated/api";
+
+function Page() {
+  const usersList =useQuery(api.users.getAllUsers);
+  return(
+   <div>
+    <p>app/widget</p>
+    <p>{JSON.stringify(usersList)}</p>
     </div>
   )
 }
+ 
+export default Page;
