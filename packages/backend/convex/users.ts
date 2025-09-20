@@ -1,4 +1,4 @@
-import {query} from "./_generated/server";
+import {mutation, query} from "./_generated/server";
 
 export const getAllUsers =query({
     args:{},
@@ -7,3 +7,15 @@ export const getAllUsers =query({
         return users;
     },
 });
+
+export const add=mutation({
+    args:{},
+    handler:async(context)=>{
+        const identity = await context.auth.getUserIdentity();
+        if(!identity){
+            throw new Error("Unauthorized");
+        }
+        const user = await context.db.insert("users",{name:"Naveen"});
+        return user;
+    },
+})

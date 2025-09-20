@@ -12,7 +12,8 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@workspace/backend":"workspace:*",
+    "@clerk/nextjs": "^6.32.0",
+    "@workspace/backend": "workspace:*",
     "@workspace/math": "workspace:*",
     "@workspace/ui": "workspace:*",
     "convex": "^1.27.1",
