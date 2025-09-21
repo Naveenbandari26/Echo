@@ -1,0 +1,8 @@
+{
+  "servers": {
+    "Sentry": {
+      "url": "https://mcp.sentry.dev/mcp/naveen-org-uw/echo",
+      "type": "http"
+    }
+  }
+}
