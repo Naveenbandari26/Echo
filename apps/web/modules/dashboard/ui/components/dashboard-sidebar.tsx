@@ -90,7 +90,9 @@ export const DashboardSidebar=()=>{
                         <SidebarMenu>
                             {customerSupportItems.map((item)=>(
                                 <SidebarMenuItem key={item.title}>
-                                    <SidebarMenuButton asChild tooltip={item.title} isActive={isActive(item.url)} size="lg">
+                                    <SidebarMenuButton asChild tooltip={item.title} isActive={isActive(item.url)} className={cn(
+                                        isActive(item.url) && 'bg-gradient-to-b! from-sidebar-primary to-[#0b63f3]! text-sidebar-primary-foreground! hover:to-[#0b63f3]/90!'
+                                    )} size="lg">
                                         <Link href={item.url} className="mx-2 gap-4"><item.icon className="size-6"/><span>{item.title}</span></Link>
                                     </SidebarMenuButton>
                                 </SidebarMenuItem>
@@ -106,7 +108,9 @@ export const DashboardSidebar=()=>{
                         <SidebarMenu >
                             {configurationItems.map((item)=>(
                                 <SidebarMenuItem key={item.title}>
-                                    <SidebarMenuButton asChild tooltip={item.title} isActive={isActive(item.url)} size="lg">
+                                    <SidebarMenuButton asChild tooltip={item.title} isActive={isActive(item.url)} className={cn(
+                                        isActive(item.url) && 'bg-gradient-to-b! from-sidebar-primary to-[#0b63f3]! text-sidebar-primary-foreground! hover:to-[#0b63f3]/90!'
+                                    )} size="lg">
                                         <Link href={item.url} className="mx-2 gap-4"><item.icon className="size-6"/><span>{item.title}</span></Link>
                                     </SidebarMenuButton>
                                 </SidebarMenuItem>
@@ -122,7 +126,9 @@ export const DashboardSidebar=()=>{
                         <SidebarMenu >
                             {accountItems.map((item)=>(
                                 <SidebarMenuItem key={item.title}>
-                                    <SidebarMenuButton asChild tooltip={item.title} isActive={isActive(item.url)} size="lg">
+                                   <SidebarMenuButton asChild tooltip={item.title} isActive={isActive(item.url)} className={cn(
+                                        isActive(item.url) && 'bg-gradient-to-b! from-sidebar-primary to-[#0b63f3]! text-sidebar-primary-foreground! hover:to-[#0b63f3]/90!'
+                                    )} size="lg">
                                         <Link href={item.url} className="mx-2 gap-4"><item.icon className="size-8"/><span>{item.title}</span></Link>
                                     </SidebarMenuButton>
                                 </SidebarMenuItem>
