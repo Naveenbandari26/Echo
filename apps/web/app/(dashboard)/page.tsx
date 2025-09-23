@@ -10,7 +10,7 @@ function Page() {
   const addUser = useMutation(api.users.add);
   return (
     <>
-      <div>
+      <div className="flex flex-col items-center justify-center min-h-screen mx-20">
         <p>app/web</p>
         <button
           onClick={async () => {
