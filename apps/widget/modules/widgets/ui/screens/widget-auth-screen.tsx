@@ -7,6 +7,8 @@ import {z} from "zod";
 import {zodResolver} from "@hookform/resolvers/zod";
 
 import WidgetHeader from '../components/widget-header';
+import { useMutation } from 'convex/react';
+import {api} from "@workspace/backend/_generated/api"
 
 const formSchema=z.object({
     name:z.string().min(1,"Name is Required"),
@@ -21,8 +23,37 @@ const WidgetAuthScreen=()=>{
         }
     })
 
-    const onSubmit=async(values: z.infer<typeof formSchema>){
-        console.log(values);
+    const organizationId="123"
+    const createContactSession=useMutation(api.public.contactSessions.create)
+
+    const onSubmit=async(values: z.infer<typeof formSchema>)=>{
+        if(!organizationId){
+            return;
+        }
+
+        const metadata={
+            userAgent: navigator.userAgent,
+            language: navigator.language,
+            languages:navigator.languages?.join(","),
+            platform: navigator.platform,
+            vendor:navigator.vendor,
+            screenResolution: `${screen.width}x${screen.height}`,
+            viewportSize:`${window.innerWidth}x${window.innerHeight}`,
+            timezone:Intl.DateTimeFormat().resolvedOptions().timeZone,
+            timezoneOffset: new Date().getTimezoneOffset(),
+            cookieEnabled: navigator.cookieEnabled,
+            referrer: document.referrer || "direct",
+            currentUrl: window.location.href,
+        };
+
+        const contactSessionId=await createContactSession({
+            ...values,
+            organizationId,
+            metadata
+        })
+        console.log({contactSessionId})
+        
+
     }
 
     return(
@@ -41,8 +72,18 @@ const WidgetAuthScreen=()=>{
                             <FormControl>
                                 <Input className='h-10 bg-background' placeholder='eg. john doe' type='text' {...field}/>
                             </FormControl>
+                            <FormMessage/>
                         </FormItem>
                      )}/>
+                     <FormField control={form.control} name="email" render={({ field })=>(
+                        <FormItem>
+                            <FormControl>
+                                <Input className='h-10 bg-background' placeholder='eg. johndoe@example.com' type='email' {...field}/>
+                            </FormControl>
+                            <FormMessage/>
+                        </FormItem>
+                     )}/>
+                     <Button disabled={form.formState.isSubmitting} size="lg" type='submit'>Continue </Button>
 
                 </form>
             </Form>
