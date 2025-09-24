@@ -36,3 +36,21 @@ export const create=mutation({
         return contactSessionId;
     },
 })
+
+export const validate=mutation({
+  args:{
+    contactSessionId:v.id("contactSessions"),
+  },
+  handler:async(context,args)=>{
+      const contactSession= await context.db.get(args.contactSessionId);
+      if(!contactSession){
+        return {valid: false, reason:"contact session in not found"}
+      }
+      
+      if(contactSession.expiresAt < Date.now()){
+        return {valid:false, reason:"contact session is expired"}
+      }
+
+      return {valid: true, contactSession}
+  }
+})
