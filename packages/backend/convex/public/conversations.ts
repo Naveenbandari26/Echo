@@ -1,0 +1,68 @@
+import { mutation, query } from "../_generated/server";
+import {ConvexError, v} from "convex/values";
+
+export const create=mutation({
+    args:{
+        organizationId:v.string(),
+        contactSessionId:v.id("contactSessions"),
+    },
+    handler:async(context,args)=>{
+        const session=await context.db.get(args.contactSessionId);
+
+        if(!session || session.expiresAt<Date.now()){
+            throw new ConvexError({
+                code:"UNAUTHORIZED",
+                message:"Invalid session",
+            })
+        }
+
+        const threadId="123"
+
+        const conversationId=await context.db.insert("conversations",{
+            contactSessionId:session._id,
+            status:"unresolved",
+            organizationId:args.organizationId,
+            threadId
+        })
+
+        return conversationId;
+    }
+})
+
+
+export const getOne=query({
+    args:{
+         conversationId:v.id("conversations"),
+        contactSessionId:v.id("contactSessions"),
+    },
+    handler: async(context,args)=>{
+        const session=await context.db.get(args.contactSessionId);
+
+        if(!session || session.expiresAt<Date.now()){
+            throw new ConvexError({
+                code:"UNAUTHORIZED",
+                message:"Invalid session",
+            })
+        }
+
+        const conversation= await context.db.get(args.conversationId);
+        if(!conversation)
+        {
+            return null;
+        }
+
+        if(conversation.contactSessionId !== session._id){
+            throw new ConvexError({
+                code:"UNAUTHORIZED",
+                message:"Incorrect session",
+            })
+        }
+
+
+        return{
+            _id: conversation._id,
+            status: conversation.status,
+            threadId: conversation.threadId
+        }   
+    }
+})

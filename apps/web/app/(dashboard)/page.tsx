@@ -16,13 +16,14 @@ function Page() {
           onClick={async () => {
             await addUser();
           }}
+          type="button"
         >
           Add User
         </button>
-        <OrganizationSwitcher hidePersonal/>
+        {/* <OrganizationSwitcher hidePersonal/> */}
         <p>{JSON.stringify(usersList)}</p>
       </div>
-      <UserButton />
+      {/* <UserButton /> */}
     </>
   );
 }

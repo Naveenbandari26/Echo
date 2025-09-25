@@ -17,3 +17,6 @@ export const contactSessionIdAtomFamily = atomFamily((organizationId:string )=>{
 //error atom
 export const errorMessageAtom=atom<string | null>(null);
 export const loadingMessageAtom=atom<string | null>(null);
+
+//conversationId atom
+export const conversationIdAtom=atom<Id<"conversations"> | null>(null);
