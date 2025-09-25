@@ -14,8 +14,8 @@ export const validate=action({
     handler: async(context, args)=>{
         try{
             console.log("trying")
-                await creatClient.organizations.getOrganization({organizationId:args.organizationId});
-                console.log("done")
+                const Id=await creatClient.organizations.getOrganization({organizationId:args.organizationId});
+                console.log("done", Id.id)
                 return {valid:true};
         }
         catch{
