@@ -31,7 +31,7 @@ import {
     AIMessage,
     AIMessageContent
 } from "@workspace/ui/components/ai/message"
-import {AIResponce} from "@workspace/ui/components/ai/response"
+import {AIResponse} from "@workspace/ui/components/ai/response"
 import {AISuggestion , AISuggestions} from "@workspace/ui/components/ai/suggestion"
 
 const formSchema=z.object({
@@ -64,15 +64,14 @@ export const WidgetChatScreen=()=>{
             contactSessionId,
         }
         :"skip",
-        {initialNumItems:10}
+        {initialNumItems:5}
     );
 
-    const {topElementRef,handleloadMore,isLoadingMore,canLoadMore}=useInfiniteScroll({
+      const { topElementRef, handleLoadMore, canLoadMore, isLoadingMore } = useInfiniteScroll({
         status: messages.status,
-        loadMore:messages.loadMore,
-        loadSize:10
-    })
-
+        loadMore: messages.loadMore,
+        loadSize: 10,
+      });
 
 
     const form =useForm<z.infer<typeof formSchema>>({
@@ -118,37 +117,34 @@ export const WidgetChatScreen=()=>{
             </WidgetHeader>
 
             <AIConversation>
-                <AIConversationContent>
-                    <InfiniteScrollTrigger
-                        canLoadMore={canLoadMore}
-                        isLoadingMore={isLoadingMore}
-                        onLoadMore={handleloadMore}
-                        ref={topElementRef}
-                    />
-                    {toUIMessages(messages.results ?? [] )
-                        ?.filter((message) => message.role === "user" || message.role === "assistant")
-                        .map((message) => {
-                            return (
-                                <AIMessage
-                                    from={message.role as "user" | "assistant"}
-                                    key={message.id}
-                                >
-                                    <AIMessageContent>{message.content}</AIMessageContent>
-                                    {/* todo: add avatar component */}
-
-                                    {message.role==="assistant" &&(
-                                        <DicebearAvatar
-                                            imageUrl="/logo.svg"
-                                            seed="assistant"
-                                            size={32}
-                                            // badgeImageUrl="/logo.svg"
-                                        />
-                                    )}
-                                </AIMessage>
-                            );
-                    })}
-                </AIConversationContent>
-            </AIConversation>
+        <AIConversationContent>
+          <InfiniteScrollTrigger
+            canLoadMore={canLoadMore}
+            isLoadingMore={isLoadingMore}
+            onLoadMore={handleLoadMore}
+            ref={topElementRef}
+          />
+          {toUIMessages(messages.results ?? [])?.map((message) => {
+            return (
+              <AIMessage
+                from={message.role === "user" ? "user" : "assistant"}
+                key={message.id}
+              >
+                <AIMessageContent>
+                  <AIResponse>{message.content}</AIResponse>
+                </AIMessageContent>
+                {message.role === "assistant" && (
+                  <DicebearAvatar
+                    imageUrl="/logo.svg"
+                    seed="assistant"
+                    size={32}
+                  />
+                )}
+              </AIMessage>
+            )
+          })}
+        </AIConversationContent>
+      </AIConversation>
 
             {/* todo add suggestions */}
 
