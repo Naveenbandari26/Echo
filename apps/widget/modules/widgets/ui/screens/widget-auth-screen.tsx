@@ -10,16 +10,16 @@ import WidgetHeader from '../components/widget-header';
 import { useMutation } from 'convex/react';
 import {api} from "@workspace/backend/_generated/api"
 import { useAtomValue, useSetAtom } from 'jotai';
-import { contactSessionIdAtomFamily, organizationIdAtom } from '../../atoms/widget-atom';
+import { contactSessionIdAtomFamily, organizationIdAtom, screenAtom } from '../../atoms/widget-atom';
 
 const formSchema=z.object({
     name:z.string().min(1,"Name is Required"),
     email:z.string().email("Invalid Email Address")
 })
 
- const organizationId="123"
 
 const WidgetAuthScreen=()=>{
+    const setScreen=useSetAtom(screenAtom)
     const organizationId=useAtomValue(organizationIdAtom);
     const setContactSessionId= useSetAtom(contactSessionIdAtomFamily(organizationId || ""))
 
@@ -62,6 +62,7 @@ const WidgetAuthScreen=()=>{
         
 
         setContactSessionId(contactSessionId);
+        setScreen("selection")
     }
 
     return(

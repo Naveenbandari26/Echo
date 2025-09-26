@@ -10,7 +10,9 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import {z} from "zod";
 import { useForm } from "react-hook-form"; 
 import { Form,FormField } from "@workspace/ui/components/form";
-
+import {useInfiniteScroll} from "@workspace/ui/hooks/use-infinite-scroll"
+import {InfiniteScrollTrigger} from "@workspace/ui/components/infinite-scroll-trigger"
+import {DicebearAvatar} from "@workspace/ui/components/dicebear-avatar"
 import {useThreadMessages, toUIMessages} from "@convex-dev/agent/react"
 import {
     AIConversation, 
@@ -65,6 +67,14 @@ export const WidgetChatScreen=()=>{
         {initialNumItems:10}
     );
 
+    const {topElementRef,handleloadMore,isLoadingMore,canLoadMore}=useInfiniteScroll({
+        status: messages.status,
+        loadMore:messages.loadMore,
+        loadSize:10
+    })
+
+
+
     const form =useForm<z.infer<typeof formSchema>>({
         resolver:zodResolver(formSchema),
         defaultValues:{
@@ -109,6 +119,12 @@ export const WidgetChatScreen=()=>{
 
             <AIConversation>
                 <AIConversationContent>
+                    <InfiniteScrollTrigger
+                        canLoadMore={canLoadMore}
+                        isLoadingMore={isLoadingMore}
+                        onLoadMore={handleloadMore}
+                        ref={topElementRef}
+                    />
                     {toUIMessages(messages.results ?? [] )
                         ?.filter((message) => message.role === "user" || message.role === "assistant")
                         .map((message) => {
@@ -119,6 +135,15 @@ export const WidgetChatScreen=()=>{
                                 >
                                     <AIMessageContent>{message.content}</AIMessageContent>
                                     {/* todo: add avatar component */}
+
+                                    {message.role==="assistant" &&(
+                                        <DicebearAvatar
+                                            imageUrl="/logo.svg"
+                                            seed="assistant"
+                                            size={32}
+                                            // badgeImageUrl="/logo.svg"
+                                        />
+                                    )}
                                 </AIMessage>
                             );
                     })}
