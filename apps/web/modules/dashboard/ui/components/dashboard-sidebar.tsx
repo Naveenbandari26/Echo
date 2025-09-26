@@ -71,7 +71,7 @@ export const DashboardSidebar=()=>{
                                 appearance={{
                                     elements:{
                                         rootBox:'w-full! h-8!',
-                                        avatarBox:"size-4! rounded-md!",
+                                        avatarBox:"size-6! rounded-md!",
                                         organizationSwitcherTrigger:"w-full! justtify-start! group-data-[collapsible=icon]:size-8! group-data[collapsible=icon]:p-2!",
                                         organizationPreview:"group-data-[collapsible=icon]:justify-center! gap-2!",
                                         organizationPreviewTextContainer:"group-data-[collapsible=icon]:hidden! text-xs! font-medium! test-sidebar-foreground!",
@@ -109,7 +109,7 @@ export const DashboardSidebar=()=>{
                             {configurationItems.map((item)=>(
                                 <SidebarMenuItem key={item.title}>
                                     <SidebarMenuButton asChild tooltip={item.title} isActive={isActive(item.url)} className={cn(
-                                        isActive(item.url) && 'bg-gradient-to-b! from-sidebar-primary to-[#0b63f3]! text-sidebar-primary-foreground! hover:to-[#0b63f3]/90!'
+                                        isActive(item.url) && ' bg-gradient-to-b! from-sidebar-primary to-[#0b63f3]! text-sidebar-primary-foreground! hover:to-[#0b63f3]/90!'
                                     )} size="lg">
                                         <Link href={item.url} className="mx-2 gap-4"><item.icon className="size-6"/><span>{item.title}</span></Link>
                                     </SidebarMenuButton>
