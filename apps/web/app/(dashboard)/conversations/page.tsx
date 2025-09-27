@@ -1,4 +1,8 @@
+import { ConversationsView } from "@/modules/dashboard/ui/views/conversations-view"
+
 const Page=()=>{
-    return <div>conversations Page</div>
+    return (
+        <ConversationsView/>
+    )
 }
 export default Page
