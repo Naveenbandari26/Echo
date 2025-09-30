@@ -88,6 +88,11 @@ export const create =mutation({
             })
         }
 
+        if(conversation.status==="unresolved"){
+            await context.db.patch(args.conversationId,{
+                status:"escalated"
+            })
+        }
 
         await saveMessage(context,components.agent,{
             threadId:conversation.threadId,
