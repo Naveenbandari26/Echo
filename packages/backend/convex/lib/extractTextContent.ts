@@ -1,13 +1,13 @@
-import { openai } from "@ai-sdk/openai";
+import { google } from "@ai-sdk/google";
 import { generateText } from "ai";
 import type { StorageActionWriter } from "convex/server";
 import { assert } from "convex-helpers";
 import { Id } from "../_generated/dataModel";
 
 const AI_MODELS = {
-  image: openai.chat("gpt-4o-mini"),
-  pdf: openai.chat("gpt-4o"),
-  html: openai.chat("gpt-4o"),
+  image: google.chat("gemini-2.5-flash"),
+  pdf: google.chat("gemini-2.5-flash"),
+  html: google.chat("gemini-2.5-flash"),
 } as const;
 
 const SUPPORTED_IMAGE_TYPES = [
@@ -31,12 +31,12 @@ export type ExtractTextContentArgs = {
 };
 
 export async function extractTextContent(
-  ctx: { storage: StorageActionWriter },
+  context: { storage: StorageActionWriter },
   args: ExtractTextContentArgs,
 ): Promise<string> {
   const { storageId, filename, bytes, mimeType } = args;
 
-  const url = await ctx.storage.getUrl(storageId);
+  const url = await context.storage.getUrl(storageId);
   assert(url, "Failed to get storage URL");
 
   if (SUPPORTED_IMAGE_TYPES.some((type) => type === mimeType)) {
@@ -48,20 +48,20 @@ export async function extractTextContent(
   }
 
   if (mimeType.toLowerCase().includes("text")) {
-    return extractTextFileContent(ctx, storageId, bytes, mimeType);
+    return extractTextFileContent(context, storageId, bytes, mimeType);
   }
 
   throw new Error(`Unsupported MIME type: ${mimeType}`);
 };
 
 async function extractTextFileContent(
-  ctx: { storage: StorageActionWriter },
+  context: { storage: StorageActionWriter },
   storageId: Id<"_storage">,
   bytes: ArrayBuffer | undefined,
   mimeType: string
 ): Promise<string> {
   const arrayBuffer = 
-    bytes || (await (await ctx.storage.get(storageId))?.arrayBuffer());
+    bytes || (await (await context.storage.get(storageId))?.arrayBuffer());
 
   if (!arrayBuffer) {
     throw new Error("Failed to get file content");
@@ -93,30 +93,48 @@ async function extractTextFileContent(
   return text;
 };
 
+
+
 async function extractPdfText(
   url: string,
   mimeType: string,
   filename: string,
 ): Promise<string> {
-  const result = await generateText({
-    model: AI_MODELS.pdf,
-    system: SYSTEM_PROMPTS.pdf,
-    messages: [
-      {
-        role: "user",
-        content: [
-          { type: "file", data: new URL(url), mimeType, filename },
-          {
-            type: "text",
-            text: "Extract the text from the PDF and print it without explaining you'll do so.",
-          }
-        ]
-      }
-    ]
-  });
+  const timeoutMs = 30000;
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
 
-  return result.text;
-};
+  try {
+    const result = await Promise.race([
+      generateText({
+        model: AI_MODELS.pdf,
+        system: SYSTEM_PROMPTS.pdf,
+        messages: [
+          {
+            role: "user",
+            content: [
+              {
+                type: "text",
+                text: `The PDF file is located at ${url}. Extract the text and return it.`,
+              },
+            ],
+          },
+        ],
+        maxRetries: 2,
+      }),
+      new Promise<{ text: string }>((_, reject) =>
+        setTimeout(() => reject(new Error("PDF processing timeout")), timeoutMs - 1000)
+      ),
+    ]);
+
+    clearTimeout(timeoutId);
+    return result.text;
+  } catch (error) {
+    clearTimeout(timeoutId);
+    console.error("Error extracting PDF text:", error);
+    return `[Error processing PDF: ${error instanceof Error ? error.message : "Unknown error"}]`;
+  }
+}
 
 async function extractImageText(url: string): Promise<string> {
   const result = await generateText({
