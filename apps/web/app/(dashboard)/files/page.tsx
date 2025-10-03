@@ -1,4 +1,6 @@
+import { FilesView } from "@/modules/files/ui/views/files-view"
+
 const Page=()=>{
-    return <div>Knowledge Page</div>
+    return <FilesView/>
 }
 export default Page
