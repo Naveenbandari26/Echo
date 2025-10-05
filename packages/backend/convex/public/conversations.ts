@@ -1,6 +1,6 @@
 import { mutation, query } from "../_generated/server";
 import {ConvexError, v} from "convex/values";
-import { SupportAgent } from "../system/ai/agents/supportAgent";
+import  SupportAgent  from "../system/ai/agents/supportAgent";
 import { MessageDoc, saveMessage } from "@convex-dev/agent";
 import { components } from "../_generated/api";
 

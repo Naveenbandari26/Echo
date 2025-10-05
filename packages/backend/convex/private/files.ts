@@ -76,6 +76,7 @@ export const addFile = action({
       await context.storage.delete(storageId);
     }
 
+    console.log(entryId)
     return {
       url: await context.storage.getUrl(storageId),
       entryId,

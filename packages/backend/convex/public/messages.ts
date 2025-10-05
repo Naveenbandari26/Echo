@@ -2,11 +2,12 @@ import { ConvexError } from "convex/values";
 import { components, internal } from "../_generated/api";
 import { action, query } from "../_generated/server";
 import { v } from "convex/values";
-import { SupportAgent } from "../system/ai/agents/supportAgent";
+import  SupportAgent  from "../system/ai/agents/supportAgent";
 import { paginationOptsValidator } from "convex/server";
 import { resolveConversation } from "../system/ai/tools/resolveConversation";
 import { escalateConversation } from "../system/ai/tools/escalateConversation";
 import { saveMessage } from "@convex-dev/agent";
+import { search } from "../system/ai/tools/search";
 
 export const create = action({
   args: {
@@ -64,6 +65,7 @@ export const create = action({
         tools: {
           resolveConversation,
           escalateConversation,
+          search:search,
         },
       }
     );

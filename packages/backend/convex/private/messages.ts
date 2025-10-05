@@ -2,7 +2,7 @@ import { ConvexError } from "convex/values";
 import { components } from "../_generated/api";
 import { action, mutation, query } from "../_generated/server";
 import {v} from "convex/values"
-import { SupportAgent } from "../system/ai/agents/supportAgent";
+import  SupportAgent  from "../system/ai/agents/supportAgent";
 import { paginationOptsValidator } from "convex/server";
 import { saveMessage } from "@convex-dev/agent";
 import {generateText} from "ai"
